@@ -172,6 +172,12 @@ ggsave(
     plot = loli_surv_gg,
     width = 9, height = 9
 )
+ggsave(
+    filename = file.path(survival_output_directory_plots, "survival_lollipop.png"),
+    plot = loli_surv_gg,
+    width = 9, height = 9,
+    units = "in"
+)
 
 # Plot survival curves stratified by drug
 
@@ -406,6 +412,28 @@ pdf(
     file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_dox.pdf")),
     width = my_width, height = my_height,
     onefile = FALSE
+)
+print(toc_vs_dox_separated)
+dev.off()
+
+png(
+    file.path(survival_output_directory_plots, qq("canine-survival_plots-all_treatments.png")),
+    width = my_width, height = my_height, res = 300, unit = "in"
+)
+print(surv_ggplot)
+dev.off()
+
+png(
+    file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_lis.png")),
+    width = my_width, height = my_height, res = 300, unit = "in"
+)
+print(toc_vs_lis_separated)
+dev.off()
+
+
+png(
+    file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_dox.png")),
+    width = my_width, height = my_height, res = 300, unit = "in"
 )
 print(toc_vs_dox_separated)
 dev.off()
