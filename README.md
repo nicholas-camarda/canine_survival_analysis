@@ -1,2 +1,2 @@
-# canine_survival_analysis
+# Canine Survival Analysis
 Repo containing the survival analysis for our manuscript.
