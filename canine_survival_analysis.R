@@ -133,6 +133,14 @@ survival_data_prepared_all_cols <- survival_data_summary %>%
     )
 write.xlsx(survival_data_prepared_all_cols, file.path(survival_output_directory_data, "canine-processed_survival_data.xlsx"))
 
+for_prism_dataset <- survival_data_prepared_all_cols %>%
+    dplyr::select(record_id, last_drug, total_survival_time, final_status) %>%
+    arrange(last_drug) %>%
+    pivot_wider(id_cols = c(record_id, total_survival_time), names_from = last_drug, values_from = c(final_status))
+# for_prism_dataset %>%
+#     print(n = Inf)
+write.xlsx(for_prism_dataset, file.path(survival_output_directory_data, "for_prism-survival_data.xlsx"))
+
 # less columns for easy manipulation and viewing
 survival_data_prepared <- survival_data_prepared_all_cols %>%
     dplyr::select(record_id, last_drug, total_survival_time, final_status)
