@@ -37,11 +37,14 @@ The analysis generates several plots saved in the `survival_results/plots/` dire
 ### All Treatments Survival Plot
 ![All Treatments Survival Plot](survival_results/plots/canine-survival_plots-all_treatments.png)
 
-### Toceranib vs Doxorubicin Survival Plot
-![Toceranib vs Doxorubicin Survival Plot](survival_results/plots/canine-survival_plot-toc_vs_dox.png)
+### Doxazosin vs Lisinopril Survival Plot
+![Doxazosin vs Lisinopril Survival Plot](survival_results/plots/canine-survival_plot-dox_vs_lis.png)
 
-### Toceranib vs Lisuride Survival Plot
-![Toceranib vs Lisuride Survival Plot](survival_results/plots/canine-survival_plot-toc_vs_lis.png)
+### Toceranib vs Doxazosin Survival Plot
+![Toceranib vs Doxazosin Survival Plot](survival_results/plots/canine-survival_plot-toc_vs_dox.png)
+
+### Toceranib vs Lisinopril Survival Plot
+![Toceranib vs Lisinopril Survival Plot](survival_results/plots/canine-survival_plot-toc_vs_lis.png)
 
 ### Survival Lollipop Plot
 ![Survival Lollipop Plot](survival_results/plots/survival_lollipop.png)
