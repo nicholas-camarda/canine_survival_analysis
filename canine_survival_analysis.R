@@ -221,7 +221,7 @@ names(line_types) <- c("last_drug=toceranib", "last_drug=toc + dox", "last_drug=
 surv_ggplot <- survminer::ggsurvplot(
     fit = survival_data_prepared_km_fit,
     data = survival_data_prepared,
-    pval = FALSE,
+    pval = TRUE,
     conf.int = FALSE,
     risk.table = FALSE,
     test.for.trend = FALSE, # the groups aren't ordered logically, like age groups, so we don't use this
