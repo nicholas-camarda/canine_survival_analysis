@@ -23,7 +23,7 @@ library(survminer)
 source(file.path("helper_script.R"))
 
 # end of follow-up
-max_survival_cutoff_date <- ymd("2024-01-19")
+max_survival_cutoff_date <- ymd("2024-05-14")
 
 ##########################################################################################################################################################################
 ########################################## BEGIN ANALYSIS ################################################################################################################
@@ -80,7 +80,7 @@ message("Ensured that we are looking at the very first and the very last date.")
 # baseline_data %>%
 #     print(n = Inf)
 
-survival_data <- read_excel("data/2024-01-19 Canine Patient Survival Data.xlsx") %>%
+survival_data <- read_excel("data/2024-05-14 Canine Patient Survival Data.xlsx") %>%
     mutate(record_id = str_c(`Patient Name`, "-", `Record ID`)) %>%
     rename(Reason = `...5`) %>%
     mutate(
@@ -102,7 +102,8 @@ survival_data <- read_excel("data/2024-01-19 Canine Patient Survival Data.xlsx")
         record_id, last_drug, baseline_date, time_to_last_visit, absolute_last_visit_date,
         extracted_date, extracted_status, extracted_reason, final_htn_group
     )
-
+survival_data %>%
+    print(n = Inf)
 survival_data_summary <- survival_data %>%
     group_by(record_id) %>%
     mutate(
@@ -261,6 +262,72 @@ surv_ggplot
 
 
 #########################################################################################################
+################################# Dox vs Lis ############################################
+#########################################################################################################
+
+dox_vs_lis_df <- survival_data_prepared %>%
+    filter(last_drug != "toceranib")
+
+line_types_dox_lis <- c("solid", "solid")
+names(line_types_dox_lis) <- c("last_drug=toc + dox", "last_drug=toc + lis")
+
+dox_vs_lis_df_km_fit <- survfit(
+    Surv(time = total_survival_time, event = final_status) ~ last_drug,
+    data = dox_vs_lis_df
+)
+
+survival_model_dox_lis <- broom.mixed::tidy(dox_vs_lis_df_km_fit)
+write.xlsx(survival_model_dox_lis, file.path(survival_output_directory_data, "canine-survival_model_params-dox_vs_lis.xlsx"))
+
+sample_size_str_df <- dox_vs_lis_df %>%
+    group_by(last_drug) %>%
+    tally() %>%
+    mutate(str = paste0(last_drug, " = ", n))
+sample_size_str_cmdb <- str_c(paste(sample_size_str_df$last_drug, sample_size_str_df$n, sep = " = "), collapse = " || ")
+
+surv_ggplot_dox_lis <- ggsurvplot(
+    fit = dox_vs_lis_df_km_fit,
+    data = dox_vs_lis_df,
+    pval = TRUE,
+    conf.int = FALSE,
+    risk.table = FALSE,
+    pval.method = TRUE,
+    cumevents = FALSE, # turn off the cumevents table
+    color = "strata",
+    linetype = "strata",
+    risk.table.y.text = FALSE, # show bars instead of names in text annotations
+    cumevents.y.text = FALSE, # show bars instead of names in text annotations
+    ncensor.plot = FALSE, # plot the number of censored subjects at time t
+    surv.median.line = "hv", # add the median survival pointer.
+    risk.table.height = 0.33,
+    # legend.labs =
+    #     new_fct_levels,
+    palette = unname(point_colors[c(2, 3)]),
+    ggtheme = surv_theme,
+    size = 1.1,
+    censor.shape = "|",
+    censor.size = 10,
+    pval.size = 7.5,
+    font.main = c(35, "bold"),
+    font.subtitle = c(30, "plain"),
+    font.x = c(25, "bold"),
+    font.y = c(25, "bold"),
+    font.tickslab = c(25, "plain")
+) + xlab("Time (Days)")
+
+
+
+surv_ggplot_dox_lis$plot <- surv_ggplot_dox_lis$plot + labs(
+    title = "Canine Cancer Patient Survival",
+    subtitle = "Stratified by Treatment Group",
+    caption = "Survival outcomes by treatment group, adjusted for follow-up status.\nSurvival outcomes Toc + Dox vs Toc + Lis\nIntention-to-treat grouping.\nBased on Kaplan-Meier estimate of survival time for each drug.\nDashed vertical line is median survival time."
+) +
+    scale_linetype_manual(values = line_types)
+
+surv_ggplot_dox_lis
+
+
+#########################################################################################################
 ################################# Toceranib alone vs Lis ################################################
 #########################################################################################################
 
@@ -415,6 +482,13 @@ pdf(
 print(toc_vs_lis_separated)
 dev.off()
 
+pdf(
+    file.path(survival_output_directory_plots, qq("canine-survival_plot-dox_vs_lis.pdf")),
+    width = my_width, height = my_height,
+    onefile = FALSE
+)
+print(surv_ggplot_dox_lis)
+dev.off()
 
 pdf(
     file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_dox.pdf")),
