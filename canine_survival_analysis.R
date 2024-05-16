@@ -490,6 +490,8 @@ pdf(
 print(surv_ggplot_dox_lis)
 dev.off()
 
+
+
 pdf(
     file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_dox.pdf")),
     width = my_width, height = my_height,
@@ -504,6 +506,14 @@ png(
 )
 print(surv_ggplot)
 dev.off()
+
+png(
+    file.path(survival_output_directory_plots, qq("canine-survival_plot-dox_vs_lis.png")),
+    width = my_width, height = my_height, res = 300, unit = "in"
+)
+print(surv_ggplot_dox_lis)
+dev.off()
+
 
 png(
     file.path(survival_output_directory_plots, qq("canine-survival_plot-toc_vs_lis.png")),
